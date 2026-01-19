@@ -1,29 +1,36 @@
 import connectToDatabase from "../../lib/mongodb";
-import Product from "../models/product";
+import Product from "../../models/product";
 
 export default async function handler(req, res) {
-  try {
-    await connectToDatabase();
+  if (req.method === "POST") {
+    try {
+      await connectToDatabase();
 
-    if (req.method === "POST") {
-      const { barcode, name, image, nutriscore } = req.body;
+      const { barcode, name, image, nutriscore, swapScore, sugarLevel } = req.body;
 
-      if (!barcode || !name) {
-        return res.status(400).json({ error: "Barcode and name are required" });
+      // Check if product already exists in inventory
+      let existing = await Product.findOne({ barcode });
+      if (existing) {
+        return res.status(400).json({ error: "Product already in inventory" });
       }
 
-      const product = await Product.create({ barcode, name, image, nutriscore });
-      return res.status(201).json(product);
-    }
+      const product = new Product({
+        barcode,
+        name,
+        image,
+        nutriscore,
+        swapScore,
+        sugarLevel,
+      });
 
-    if (req.method === "GET") {
-      const products = await Product.find({});
-      return res.status(200).json(products);
-    }
+      await product.save();
 
-    res.status(405).end();
-  } catch (error) {
-    console.error("API Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+      res.status(200).json({ message: "Product saved", product });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Failed to save product" });
+    }
+  } else {
+    res.status(405).json({ error: "Method not allowed" });
   }
 }

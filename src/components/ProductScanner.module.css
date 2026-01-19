@@ -1,0 +1,32 @@
+.container {
+    padding: 1rem;
+  }
+  
+  .inputGroup {
+    margin-bottom: 1rem;
+  }
+  
+  .productCard {
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin: 8px 0;
+    border-radius: 6px;
+  }
+  
+  .badge {
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .imgSmall {
+    width: 100px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .resultsContainer {
+    margin-top: 1rem;
+  }
+  
